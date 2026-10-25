@@ -106,7 +106,7 @@ All metrics below are generated automatically by executing `make all` on the **h
 | :--- | :---: | :---: | :---: |
 | **Signal Reconstruction $R^2$ (5,000 test scenarios)** | `0.5870` | `0.7449` | **`0.9340`** *(FP32 parity: `0.9340`)* |
 | **$B_z$ Mean Absolute Error (% Full Scale)** | `8.83 %` | `7.54 %` | **`3.22 %`** *(Target `< 10 %`)* |
-| **Unintended Switch Actuation Rate** | `9.42 %` | `7.74 %` | **`3.66 %`** (network-only; see deployed-path note below) |
+| **Unintended Switch Actuation Rate** | `9.42 %` | `7.74 %` | **`3.62 %`** (network-only; calibration corrected; see deployed note) |
 | **Near-Field Magnetic Spoofing Blocked (`ISO/IEC 27090`)** | `0 / 500 (0 %)` | `0 / 500 (0 %)` | **`500 / 500 (100.0 %)` → Safe Neutral** *(synthetic inputs; no real sensor/attacker data)* |
 | **Execution Latency per Runnable Step** | — | — | **`0.30 µs` host** *(measured, 300.5 ns avg)* / **`~3.18 µs` @ 250 MHz M33** *(estimate, not measured on target)* — vs. `10 ms` baseline |
 | **Model + Partition Manager Flash Footprint** | — | — | **`716 B` (Weights) + `562 B`** *(size of `mpu_stm32h5_pmsav8.o` only; not a full BSW)* |
@@ -119,10 +119,10 @@ of the deployed decision path (`monitor → 1-pole LP filter → switch threshol
 
 | Metric | Value |
 | :--- | :---: |
-| Network-only false-switch rate (reported) | `3.66 %` |
-| Deployed-path false-switch rate | **`4.66 %`** (smoothing tuned 3/4 → 7/8) |
-| Deployed-path false-negative (missed real press) | `3.56 %` |
-| Deployed-path false-positive (spurious press) | `1.10 %` |
+| Network-only false-switch rate (reported) | `3.62 %` (post-calibration) |
+| Deployed-path false-switch rate | **`4.52 %`** (smoothing 7/8 + calibration) |
+| Deployed-path false-negative (missed real press) | `3.32 %` |
+| Deployed-path false-positive (spurious press) | `1.20 %` |
 | 1oo2 plausibility monitor false-positive on legitimate test data | `0.10 %` (MAX_ASYMMETRIC_GRADIENT 4800 → 6000) |
 | IBP envelope vs. i16-deployed output | `3.4x` (mathematically redundant as a runtime bound) |
 

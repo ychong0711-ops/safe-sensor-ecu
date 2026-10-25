@@ -180,6 +180,14 @@ def main() -> None:
     W2_q = np.clip(np.round(W2.T * S), -32767, 32767).astype(np.int64)  # shape (3, 32)
     b2_q = np.round(b2 * S).astype(np.int64)                            # shape (3,)
 
+    # Post-quantization calibration: remove mean residual on the training set.
+    z1_cal = (np.round(x_train).astype(np.int64) @ W1_q.T + b1_q[None, :]) >> SHIFT
+    h1_cal = np.maximum(0, z1_cal)
+    q_cal = ((h1_cal @ W2_q.T + b2_q[None, :]) >> SHIFT).astype(np.float64)
+    cal_bias = np.round(np.mean(y_train - q_cal, axis=0) * S).astype(np.int64)
+    b2_q = b2_q + cal_bias
+    print("Calibration bias (centi-mT):", (cal_bias / S).tolist())
+
     # Exact bit-accurate integer inference on 5,000 unseen test samples
     x_i = np.round(x_test).astype(np.int64)
     z1_i = (x_i @ W1_q.T + b1_q[None, :]) >> SHIFT

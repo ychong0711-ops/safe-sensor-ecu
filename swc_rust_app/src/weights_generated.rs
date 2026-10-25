@@ -4,10 +4,10 @@
 // Unseen 5,000-Sample Test Metrics:
 //   - Raw Uncompensated R^2:  0.5870 (Bz error: 8.83% FS, False Switch Rate: 9.42%)
 //   - FP32 Reference FNN R^2: 0.9340
-//   - Q2.13 Integer FNN R^2:  0.9340 (Bz error: 3.22% FS, False Switch Rate: 3.66%)
+//   - Q2.13 Integer FNN R^2:  0.9343 (Bz error: 3.21% FS, False Switch Rate: 3.62%)
 //   - Formal IBP Output Bounds over [-130 mT, +130 mT]^6:
-//     low  = [-105458, -113003, -56026] centi-mT
-//     high = [100691, 100159, 99125] centi-mT
+//     low  = [-105451, -113012, -56021] centi-mT
+//     high = [100698, 100149, 99130] centi-mT
 
 pub const Q_SHIFT: u32 = 13;
 pub const HIDDEN_DIM: usize = 32;
@@ -58,5 +58,5 @@ pub static W2_Q13: [[i16; 32]; 3] = [
 ];
 
 pub static B2_Q13: [i32; 3] = [
-    3504261, -1031924, 2865537
+    3561706, -1111865, 2907877
 ];
