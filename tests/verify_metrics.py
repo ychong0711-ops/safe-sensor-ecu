@@ -59,7 +59,7 @@ def rust_fnn(x):
         out[k] = clamp_i16(acc2 >> SHIFT)
     return out
 
-MAX_ASYM = 4800
+MAX_ASYM = 6000
 MAX_CERT = 3800
 SWITCH_THRESH = 1100
 

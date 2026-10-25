@@ -99,7 +99,10 @@ void Bsw_ReportRustPanicAndRecover(uint32_t panic_code)
     __asm__ volatile("cpsie i" ::: "memory");
 
     while (1) {
-        /* On target board, raises SVC #0xFF to unwind PSP frame back to BSW scheduler */
+        /* TARGET SEMANTICS: fail-safe spin loop (host HIL overrides via siglongjmp).
+         * A Rust panic does NOT patch the cortex-m stacked exception frame here;
+         * the runnable stays in fail-safe until the outer scheduler/SVC reset path
+         * (out of scope for this sketch) re-enters. See README § 'Panic recovery'. */
         __asm__ volatile("nop");
     }
 }

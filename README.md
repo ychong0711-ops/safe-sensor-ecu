@@ -120,10 +120,10 @@ of the deployed decision path (`monitor → 1-pole LP filter → switch threshol
 | Metric | Value |
 | :--- | :---: |
 | Network-only false-switch rate (reported) | `3.66 %` |
-| Deployed-path false-switch rate | **`7.36 %`** |
-| Deployed-path false-negative (missed real press) | `6.26 %` |
-| Deployed-path false-positive (spurious press) | `1.10 %` |
-| 1oo2 plausibility monitor false-positive on legitimate test data | `0.72 %` |
+| Deployed-path false-switch rate | **`6.76 %`** |
+| Deployed-path false-negative (missed real press) | `5.62 %` |
+| Deployed-path false-positive (spurious press) | `1.14 %` |
+| 1oo2 plausibility monitor false-positive on legitimate test data | `0.10 %` (MAX_ASYMMETRIC_GRADIENT 4800 → 6000) |
 | IBP envelope vs. i16-deployed output | `3.4x` (mathematically redundant as a runtime bound) |
 
 Re-run with `python tests/verify_metrics.py`; CI runs the same script (see § pipeline).
@@ -139,6 +139,15 @@ The control tick and CAN heartbeat are incremented **unconditionally** at the st
 every `Execute_1ms_Ecu_Cycle`, so a faulted cycle still counts as a successful one.
 The number therefore shows harness continuity, not fault-isolation proof. A genuine
 stimulus-based verdict is deferred to a follow-up test (`docs/05-...` to be added).
+
+### Panic recovery semantics (target vs. host)
+- **Host HIL (`hil_sim/hil_runner.c`)**: `Bsw_ReportRustPanicAndRecover` performs
+  `siglongjmp`, so the runnable returns to a safe-state and the C loop keeps ticking.
+- **Target bare-metal sketch (`bsw_c/src/mpu_stm32h5_pmsav8.c`)**: the same routine
+  enters a **fail-safe spin loop** (`while (1) nop`). It does *not* unwind the
+  Cortex-M exception frame or invoke an SVC; stack-frame patching (`return_pc` redirect)
+  is implemented only inside `MemManage_Handler` for **MPU violations**, not for Rust panics.
+  Treat the host-side "zero-reset recovery" curve as emulation only when porting to silicon.
 
 **Provenance legend** — how to read the numbers above:
 

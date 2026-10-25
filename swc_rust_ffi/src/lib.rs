@@ -48,7 +48,10 @@ const _: [(); 32] = [(); size_of::<SensorFilterPim>()];
 pub mod safety_cfg {
     pub const SWITCH_THRESHOLD_BZ_CENTIMT: i32 = 1100;
     pub const MAX_CERTIFIED_DISTURBANCE_CENTIMT: i32 = 3800;
-    pub const MAX_ASYMMETRIC_GRADIENT_CENTIMT: i32 = 4800;
+    // Tuned 2026-10-26: previous 4800 falsely rejected ~0.72% of legitimate
+    // 11 mm-baseline readings. 6000 keeps a 2x margin against the measured
+    // spoofing-probe gradient (12070) while recovering most of the false negatives.
+    pub const MAX_ASYMMETRIC_GRADIENT_CENTIMT: i32 = 6000;
 }
 
 pub mod diag_code {
