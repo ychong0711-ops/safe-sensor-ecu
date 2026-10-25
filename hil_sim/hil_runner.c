@@ -117,12 +117,16 @@ static uint64_t monotonic_ns(void)
 /* Execute one 1-ms ECU control cycle with hardware partition boundary enforcement */
 static void Execute_1ms_Ecu_Cycle(const Rte_RpDualHallRawType *rx, Rte_PpCleanSwitchOutType *tx)
 {
-    g_protected_c_ram->control_loop_ticks_1ms++;
+    /* Cycle counting deliberately happens *after* a successful runnable return
+     * (see trap_code == 0 below) so an invoked-but-faulted cycle no longer looks
+     * like a healthy one. The outer C-BSW heartbeat still ticks every cycle. */
 
     g_in_rust_partition = 1;
     int trap_code = sigsetjmp(g_partition_recovery_env, 1);
     if (trap_code == 0) {
         Runnable_HallFilterSafetySwc_Step(rx, tx);
+        /* Only cycles whose runnable returned normally count as healthy. */
+        g_protected_c_ram->control_loop_ticks_1ms++;
     } else {
         /* Deterministic Zero-Reset Safe-State Fallback (`Switch = SafeNeutral`, C loop intact!) */
         g_protected_c_ram->ea_lock_depth = 0u; /* Clean up any interrupted EA lock */
@@ -222,18 +226,28 @@ int main(void)
     double avg_mpu_recovery_ns = (double)(t_mpu_end - t_mpu_start) / 500.0;
 
     const uint32_t expected_total_cycles = N_PERF + 500u + 500u + 500u;
-    int all_pass = (g_protected_c_ram->control_loop_ticks_1ms == expected_total_cycles)
+    /* Per-suite pass stamps (stimulus based, not tautological tick counting): */
+    int suite1_pass = (g_protected_c_ram->control_loop_ticks_1ms == N_PERF);
+    int suite2_pass = (spoofing_detected == 500u);
+    int suite3_pass = (g_protected_c_ram->rust_panic_recoveries == 500u);
+    int suite4_pass = (g_protected_c_ram->mpu_write_fault_recoveries == 500u);
+    int all_pass = suite1_pass && suite2_pass && suite3_pass && suite4_pass
                 && (g_protected_c_ram->can_tx_heartbeat_count == expected_total_cycles)
                 && (g_protected_c_ram->steering_assist_torque_mNm == 1250)
-                && (g_protected_c_ram->ea_lock_depth == 0u)
-                && (spoofing_detected == 500u)
-                && (g_protected_c_ram->rust_panic_recoveries == 500u)
-                && (g_protected_c_ram->mpu_write_fault_recoveries == 500u);
+                && (g_protected_c_ram->ea_lock_depth == 0u);
 
     printf("{\n");
     printf("  \"status\": \"%s\",\n", all_pass ? "PASS_ALL_11500_CYCLES" : "FAIL");
     printf("  \"total_ecu_1ms_ticks\": %u,\n", g_protected_c_ram->control_loop_ticks_1ms);
     printf("  \"can_heartbeat_frames_sent\": %u,\n", g_protected_c_ram->can_tx_heartbeat_count);
+    printf("  \"suite1_nominal_healthy_cycles\": %u,\n", g_protected_c_ram->control_loop_ticks_1ms);
+    printf("  \"suite1_pass\": %s,\n", suite1_pass ? "true" : "false");
+    printf("  \"suite2_spoofing_blocked\": \"%u / 500\",\n", spoofing_detected);
+    printf("  \"suite2_pass\": %s,\n", suite2_pass ? "true" : "false");
+    printf("  \"suite3_rust_panics_isolated\": \"%u / 500\",\n", g_protected_c_ram->rust_panic_recoveries);
+    printf("  \"suite3_pass\": %s,\n", suite3_pass ? "true" : "false");
+    printf("  \"suite4_mpu_writes_isolated\": \"%u / 500\",\n", g_protected_c_ram->mpu_write_fault_recoveries);
+    printf("  \"suite4_pass\": %s,\n", suite4_pass ? "true" : "false");
     printf("  \"missed_deadlines\": %u,\n",
            expected_total_cycles - g_protected_c_ram->can_tx_heartbeat_count);
     printf("  \"protected_c_torque_intact_mNm\": %d,\n",
