@@ -120,9 +120,9 @@ of the deployed decision path (`monitor → 1-pole LP filter → switch threshol
 | Metric | Value |
 | :--- | :---: |
 | Network-only false-switch rate (reported) | `3.66 %` |
-| Deployed-path false-switch rate | **`6.76 %`** |
-| Deployed-path false-negative (missed real press) | `5.62 %` |
-| Deployed-path false-positive (spurious press) | `1.14 %` |
+| Deployed-path false-switch rate | **`4.66 %`** (smoothing tuned 3/4 → 7/8) |
+| Deployed-path false-negative (missed real press) | `3.56 %` |
+| Deployed-path false-positive (spurious press) | `1.10 %` |
 | 1oo2 plausibility monitor false-positive on legitimate test data | `0.10 %` (MAX_ASYMMETRIC_GRADIENT 4800 → 6000) |
 | IBP envelope vs. i16-deployed output | `3.4x` (mathematically redundant as a runtime bound) |
 

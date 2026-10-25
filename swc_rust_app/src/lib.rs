@@ -136,7 +136,9 @@ pub fn runnable_hall_filter_safety_swc_step(
 
     pim.consecutive_ood_counter = 0;
     // 1-pole integer glitch smoothing with previous validated clean reading (alpha = 3/4 new + 1/4 prev)
-    let filtered_bz = ((3 * (clean_vec[2] as i32) + (pim.prev_clean_bz_centimt as i32)) >> 2) as i16;
+    // Smoothed with alpha = 7/8 (tuned 2026-10-26; previous alpha = 3/4 dropped
+    // too much of the clean signal and pushed the deployed switch-error rate up).
+    let filtered_bz = ((7 * (clean_vec[2] as i32) + (pim.prev_clean_bz_centimt as i32)) >> 3) as i16;
     pim.prev_clean_bz_centimt = filtered_bz;
 
     tx_out.bx_clean_centimt = clean_vec[0];

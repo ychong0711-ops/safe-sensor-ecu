@@ -122,7 +122,7 @@ for i in range(len(xi)):
     if not p:
         sw_states.append(0)      # safe state
         continue
-    filt = (3*int(y[2]) + prev) >> 2
+    filt = (7*int(y[2]) + prev) >> 3
     prev = filt
     sw_states.append(1 if filt >= SWITCH_THRESH else 0)
 sw_states = np.array(sw_states)
