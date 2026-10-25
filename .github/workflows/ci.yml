@@ -21,3 +21,6 @@ jobs:
 
       - name: Execute Codegen, #![forbid(unsafe_code)] Build, Cortex-M33 Check & 11,500-Cycle Fault-Injection Suite
         run: make all
+
+      - name: Independent metric verification
+        run: python3 tests/verify_metrics.py

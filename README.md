@@ -106,11 +106,39 @@ All metrics below are generated automatically by executing `make all` on the **h
 | :--- | :---: | :---: | :---: |
 | **Signal Reconstruction $R^2$ (5,000 test scenarios)** | `0.5870` | `0.7449` | **`0.9340`** *(FP32 parity: `0.9340`)* |
 | **$B_z$ Mean Absolute Error (% Full Scale)** | `8.83 %` | `7.54 %` | **`3.22 %`** *(Target `< 10 %`)* |
-| **Unintended Switch Actuation Rate** | `9.42 %` | `7.74 %` | **`3.66 %`** |
+| **Unintended Switch Actuation Rate** | `9.42 %` | `7.74 %` | **`3.66 %`** (network-only; see deployed-path note below) |
 | **Near-Field Magnetic Spoofing Blocked (`ISO/IEC 27090`)** | `0 / 500 (0 %)` | `0 / 500 (0 %)` | **`500 / 500 (100.0 %)` → Safe Neutral** *(synthetic inputs; no real sensor/attacker data)* |
 | **Execution Latency per Runnable Step** | — | — | **`0.30 µs` host** *(measured, 300.5 ns avg)* / **`~3.18 µs` @ 250 MHz M33** *(estimate, not measured on target)* — vs. `10 ms` baseline |
 | **Model + Partition Manager Flash Footprint** | — | — | **`716 B` (Weights) + `562 B`** *(size of `mpu_stm32h5_pmsav8.o` only; not a full BSW)* |
 | **C Control Loop Survival across 1,000 Fault Injections** | Crash / Corruption | Crash / Corruption | **`11,500 / 11,500` ticks (`0` missed CAN frames)** — *the C control loop increments unconditionally; see § 5* |
+
+### Independent verification note (added 2026-10-26)
+The percentages above are **network-only** metrics. An independent re-implementation
+of the deployed decision path (`monitor → 1-pole LP filter → switch threshold`) in
+`tests/verify_metrics.py` gives:
+
+| Metric | Value |
+| :--- | :---: |
+| Network-only false-switch rate (reported) | `3.66 %` |
+| Deployed-path false-switch rate | **`7.36 %`** |
+| Deployed-path false-negative (missed real press) | `6.26 %` |
+| Deployed-path false-positive (spurious press) | `1.10 %` |
+| 1oo2 plausibility monitor false-positive on legitimate test data | `0.72 %` |
+| IBP envelope vs. i16-deployed output | `3.4x` (mathematically redundant as a runtime bound) |
+
+Re-run with `python tests/verify_metrics.py`; CI runs the same script (see § pipeline).
+
+### IBP (Interval Bound Propagation) scope
+The published bounds (`low = [-105458, -113003, -56026]`, `high = [100691, 100159, 99125]`)
+are valid inside the trained disturbance domain (`2–32 mT`) and for the FP32 graph only;
+they are **not** a runtime safety envelope for the i16-deployed network and must not be
+presented as such. See `tests/verify_metrics.py` CHECK 4/5.
+
+### HIL "11,500 / 11,500" tick survival — caveat
+The control tick and CAN heartbeat are incremented **unconditionally** at the start of
+every `Execute_1ms_Ecu_Cycle`, so a faulted cycle still counts as a successful one.
+The number therefore shows harness continuity, not fault-isolation proof. A genuine
+stimulus-based verdict is deferred to a follow-up test (`docs/05-...` to be added).
 
 **Provenance legend** — how to read the numbers above:
 
@@ -188,6 +216,13 @@ safe-sensor-ecu/
 ```bash
 make all
 ```
+
+### Independent verification (non-certified, host-side)
+```bash
+python3 tests/verify_metrics.py
+```
+Reproduces the network-vs-deployed-path comparison and IBP scope notes above. CI
+runs the same script on every push / pull request.
 
 > Requires Linux/macOS with `python3`, `cargo`, `gcc`, `arm-none-eabi-gcc`. On Windows use WSL.
 >
