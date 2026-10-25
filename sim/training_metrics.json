@@ -1,0 +1,26 @@
+{
+  "r2_raw_uncompensated": 0.587,
+  "r2_classic_differential": 0.7449,
+  "r2_fp32_fnn": 0.934,
+  "r2_q13_integer_fnn": 0.934,
+  "mae_bz_raw_pct_fs": 8.83,
+  "mae_bz_diff_pct_fs": 7.54,
+  "mae_bz_q13_pct_fs": 3.22,
+  "false_switch_rate_raw_pct": 9.42,
+  "false_switch_rate_diff_pct": 7.74,
+  "false_switch_rate_q13_pct": 3.66,
+  "ibp_output_bounds_centimt": {
+    "low": [
+      -105458,
+      -113003,
+      -56026
+    ],
+    "high": [
+      100691,
+      100159,
+      99125
+    ]
+  },
+  "total_macs": 288,
+  "rom_weight_bytes": 716
+}

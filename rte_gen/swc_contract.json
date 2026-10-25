@@ -1,0 +1,50 @@
+{
+  "schema_version": "ARXML-Lite-1.0",
+  "ecu_name": "SteeringWheelSwitchSafetyECU",
+  "target_mcus": ["STM32H563ZI_CortexM33", "Infineon_AURIX_TC375_TriCore"],
+  "asil_level": "ASIL-C(D)",
+  "swc_name": "HallFilterSafetySwc",
+  "memory_partition": {
+    "pim_section": ".pim_rust_swc",
+    "rust_ram_section": ".ram_rust_swc",
+    "mpu_alignment_bytes": 32,
+    "protection_set_id": 1
+  },
+  "exclusive_areas": [
+    {
+      "name": "EA_SensorFilterPim",
+      "c_enter_fn": "Rte_Enter_EA_SensorFilterPim",
+      "c_exit_fn": "Rte_Exit_EA_SensorFilterPim",
+      "description": "Protects shared PerInstanceMemory across C ISR/BSW and Rust SWC cores/tasks"
+    }
+  ],
+  "ports": {
+    "receiver": {
+      "name": "RpDualHallRaw",
+      "fields": [
+        {"name": "bx_a_centimt", "type": "i16", "unit": "0.01 mT"},
+        {"name": "by_a_centimt", "type": "i16", "unit": "0.01 mT"},
+        {"name": "bz_a_centimt", "type": "i16", "unit": "0.01 mT"},
+        {"name": "bx_b_centimt", "type": "i16", "unit": "0.01 mT"},
+        {"name": "by_b_centimt", "type": "i16", "unit": "0.01 mT"},
+        {"name": "bz_b_centimt", "type": "i16", "unit": "0.01 mT"},
+        {"name": "fault_inject_cmd", "type": "u8", "unit": "enum"}
+      ]
+    },
+    "sender": {
+      "name": "PpCleanSwitchOut",
+      "fields": [
+        {"name": "bx_clean_centimt", "type": "i16", "unit": "0.01 mT"},
+        {"name": "by_clean_centimt", "type": "i16", "unit": "0.01 mT"},
+        {"name": "bz_clean_centimt", "type": "i16", "unit": "0.01 mT"},
+        {"name": "switch_pressed", "type": "u8", "unit": "bool"},
+        {"name": "diag_status", "type": "u8", "unit": "DiagStatus"}
+      ]
+    }
+  },
+  "safety_bounds": {
+    "switch_threshold_bz_centimt": 1100,
+    "max_certified_disturbance_centimt": 3800,
+    "max_asymmetric_gradient_centimt": 4800
+  }
+}

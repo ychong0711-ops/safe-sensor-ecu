@@ -1,0 +1,10 @@
+[workspace]
+members = ["swc_rust_ffi", "swc_rust_app", "swc_rust_rte_entry"]
+resolver = "2"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = false

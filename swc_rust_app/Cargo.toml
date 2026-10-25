@@ -1,0 +1,11 @@
+[package]
+name = "swc_rust_app"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "swc_rust_app"
+crate-type = ["rlib"]
+
+[dependencies]
+swc_rust_ffi = { path = "../swc_rust_ffi" }

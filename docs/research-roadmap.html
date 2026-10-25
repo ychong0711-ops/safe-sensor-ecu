@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>safe-sensor-ecu — 독일 자동차 임베디드 연구 로드맵</title>
+<style>
+  :root { --bg:#0f172a; --card:#1e293b; --fg:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --green:#34d399; --warn:#facc15; --red:#f87171; --border:#334155; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif; background:var(--bg); color:var(--fg); line-height:1.65; }
+  .container { max-width:1080px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+  header { border-bottom:1px solid var(--border); padding-bottom:1.5rem; margin-bottom:2rem; }
+  h1 { margin:0 0 .25rem; font-size:1.9rem; color:var(--accent); }
+  .subtitle { color:var(--muted); font-size:.95rem; }
+  .banner { background:#1e3a5f; border:1px solid var(--accent); border-radius:8px; padding:.9rem 1.1rem; margin:1.2rem 0; color:#dbeafe; font-size:.95rem; }
+  nav.toc { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1rem 1.25rem; margin-bottom:2rem; }
+  nav.toc h2 { margin:0 0 .5rem; font-size:1.05rem; color:var(--accent); }
+  nav.toc ul { columns:2; padding-left:1.2rem; margin:0; }
+  nav.toc li { margin:.25rem 0; break-inside:avoid; }
+  nav.toc a { color:var(--fg); text-decoration:none; }
+  nav.toc a:hover { color:var(--accent); }
+  h2 { color:var(--accent); margin-top:2.5rem; border-bottom:1px solid var(--border); padding-bottom:.4rem; }
+  h3 { color:var(--green); margin-top:1.5rem; }
+  h4 { color:var(--warn); margin-top:1.2rem; }
+  p, li { color:var(--fg); }
+  code, pre { font-family:"Cascadia Code","Fira Code",Consolas,monospace; }
+  code { background:#0b1220; padding:.15rem .4rem; border-radius:4px; font-size:.9em; color:var(--warn); }
+  pre { background:#0b1220; border:1px solid var(--border); border-radius:8px; padding:1rem; overflow-x:auto; font-size:.85rem; line-height:1.5; }
+  table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:.88rem; }
+  th, td { border:1px solid var(--border); padding:.45rem .65rem; text-align:left; vertical-align:top; }
+  th { background:var(--card); color:var(--accent); }
+  tr:nth-child(even) td { background:#151e33; }
+  .tag { display:inline-block; padding:.1rem .5rem; border-radius:4px; font-size:.75rem; font-weight:600; }
+  .tag.ok { background:#064e3b; color:var(--green); }
+  .tag.no { background:#450a0a; color:var(--red); }
+  .note { background:#1e293b; border-left:3px solid var(--warn); padding:.7rem 1rem; margin:1rem 0; border-radius:4px; font-size:.9rem; }
+  ul.checklist { list-style:none; padding-left:0; }
+  ul.checklist li { padding-left:1.6rem; position:relative; }
+  ul.checklist li::before { content:"☐"; position:absolute; left:0; color:var(--muted); }
+  footer { border-top:1px solid var(--border); margin-top:3rem; padding-top:1rem; color:var(--muted); font-size:.85rem; text-align:center; }
+  a { color:var(--accent); }
+  .pill { display:inline-block; padding:.15rem .55rem; border-radius:999px; background:#1e3a5f; color:var(--accent); font-size:.78rem; font-weight:600; margin:.15rem; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>독일 자동차 임베디드 연구 로드맵</h1>
+  <div class="subtitle">safe-sensor-ecu → Masterstudium → Masterarbeit → Promotion (Dr.-Ing.)</div>
+  <div class="banner">
+    <strong>목적:</strong> 현재 프로젝트(<code>safe-sensor-ecu</code>)를 출발점으로, 독일 자동차 임베디드 분야의
+    <strong>Masterstudium → Masterarbeit → Promotion (Dr.-Ing.)</strong> 까지 확장하는 실전 로드맵.
+    기존 <code>docs/01-ee-master-phd-action-plan.md</code>, <code>docs/02-german-grad-phd-roadmap.md</code>를 보완한다.
+  </div>
+</header>
+
+<nav class="toc">
+  <h2>목차</h2>
+  <ul>
+    <li><a href="#s0">0. 현재 프로젝트의 연구 씨앗</a></li>
+    <li><a href="#stage0">Stage 0 — 현재 상태 (2026)</a></li>
+    <li><a href="#stage1">Stage 1 — 포트폴리오 강화</a></li>
+    <li><a href="#stage2">Stage 2 — Masterstudium 진입</a></li>
+    <li><a href="#stage3">Stage 3 — Masterarbeit</a></li>
+    <li><a href="#stage4">Stage 4 — Promotion (Dr.-Ing.)</a></li>
+    <li><a href="#stage5">Stage 5 — 자금/장학금</a></li>
+    <li><a href="#stage6">Stage 6 — 실행 체크리스트</a></li>
+    <li><a href="#appA">부록 A — Lehrstuhl 추천</a></li>
+    <li><a href="#appB">부록 B — 출판 타겟</a></li>
+    <li><a href="#appC">부록 C — 프로젝트→RQ 매핑</a></li>
+  </ul>
+</nav>
+
+<section id="s0">
+<h2>0. 현재 프로젝트가 제공하는 "연구 씨앗"</h2>
+<table>
+  <tr><th>자산</th><th>위치</th><th>연구 가치</th></tr>
+  <tr><td>Q2.13 FNN (6→32→3, 288 MAC, 716 B)</td><td><code>sim/train_and_quantize.py</code>, <code>swc_rust_app/src/</code></td><td>TinyML on constrained MCUs, 형식 검증 가능한 NN</td></tr>
+  <tr><td>Dual-Hall gradiometer + 1oo2 plausibility</td><td><code>swc_rust_app/src/lib.rs</code></td><td>물리 기반 AI 안전 모니터링, ISO/IEC 27090</td></tr>
+  <tr><td>C/Rust 하이브리드 파티션 스케치</td><td><code>bsw_c/</code>, <code>swc_rust_*</code></td><td>Freedom from Interference, MPU isolation</td></tr>
+  <tr><td>HIL fault-injection harness</td><td><code>hil_sim/hil_runner.c</code></td><td>Zero-reset recovery, WCET 측정</td></tr>
+  <tr><td>IBP formal bounds</td><td><code>sim/train_and_quantize.py</code></td><td>인증 가능한 NN 출력 범위</td></tr>
+</table>
+<h3>핵심 연구 질문 (RQ)</h3>
+<ul>
+  <li><strong>RQ1</strong>: Q2.13 FNN의 정확도 손실 없이 (R² 0.934) MCU에서 &lt; 5 µs 이내 추론이 가능한가? (WCET 보장)</li>
+  <li><strong>RQ2</strong>: Dual-Hall gradiometer가 near-field 자기 스푸핑을 100% 차단하면서 false-positive rate &lt; 1%를 유지할 수 있는가?</li>
+  <li><strong>RQ3</strong>: C/Rust 파티션 경계에서 Freedom from Interference를 형식적으로 증명할 수 있는가? (MPU + Rust 타입 시스템)</li>
+  <li><strong>RQ4</strong>: HIL 에뮬레이션이 실제 target(Cortex-M33/AURIX) 동작을 얼마나 정확히 예측하는가?</li>
+  <li><strong>RQ5</strong>: 합성 데이터 기반 모델이 실제 센서/환경에서 얼마나 일반화되는가?</li>
+</ul>
+</section>
+
+<section id="stage0">
+<h2>Stage 0 — 현재 상태 (2026, 완료)</h2>
+<ul class="checklist">
+  <li>개념 데모 구현 (FNN + PimGuard + MPU 스케치 + HIL)</li>
+  <li>재현 가능한 빌드 (<code>make all</code> → PASS)</li>
+  <li>README 정직화 (concept demonstrator 포지셔닝)</li>
+  <li>HTML 사용자 설명서 (<code>docs/user-manual.html</code>)</li>
+</ul>
+<p><strong>다음 단계 진입 조건:</strong> GitHub 공개 레포 + README/문서 정리 + 데모 영상</p>
+</section>
+
+<section id="stage1">
+<h2>Stage 1 — 포트폴리오 강화 (2026 Q4, 2–3개월)</h2>
+<p><strong>목표:</strong> 독일 대학원 지원/HiWi 지원 시 "이 프로젝트를 5분 안에 이해시키는" 자료 완성.</p>
+<table>
+  <tr><th>#</th><th>작업</th><th>산출물</th><th>우선순위</th></tr>
+  <tr><td>1.1</td><td>GitHub 공개 레포 정리 (README, LICENSE, CI badge)</td><td>공개 레포</td><td>P0</td></tr>
+  <tr><td>1.2</td><td>데모 영상 (3–5분): <code>make all</code> 실행 → HIL PASS → 스푸핑 차단 시연</td><td>YouTube/MP4</td><td>P0</td></tr>
+  <tr><td>1.3</td><td>기술 블로그 2편 (영문)</td><td>Medium/Dev.to</td><td>P1</td></tr>
+  <tr><td>1.4</td><td>LinkedIn 프로필 정비 + 독일 자동차 임베디드 키워드 최적화</td><td>LinkedIn</td><td>P1</td></tr>
+  <tr><td>1.5</td><td>문서 통합 정리</td><td>docs/</td><td>P2</td></tr>
+</table>
+<div class="note">
+<strong>핵심 메시지 (지원 시 사용):</strong><br>
+"I built a reproducible concept demonstrator for a hardware-enforced C/Rust hybrid ECU,
+combining a Q2.13 fixed-point neural filter with formal IBP bounds and a host HIL
+fault-injection harness — 11,500 cycles, 0 missed deadlines in emulation."
+</div>
+</section>
+
+<section id="stage2">
+<h2>Stage 2 — 독일 Masterstudium 진입 (2027–2029)</h2>
+<h3>2.1 추천 대학/Lehrstuhl (자동차 임베디드 특화)</h3>
+<table>
+  <tr><th>대학</th><th>프로그램</th><th>강점</th><th>비고</th></tr>
+  <tr><td><strong>TU München (TUM)</strong></td><td>M.Sc. Electrical Engineering / Robotics</td><td>AUTOSAR, 임베디드 시스템, ECU</td><td>경쟁 높음, 영어 프로그램 있음</td></tr>
+  <tr><td><strong>KIT (Karlsruhe)</strong></td><td>M.Sc. Electrical Engineering</td><td>자동차 전자, ECU, ADAS</td><td>산업 연계 강함</td></tr>
+  <tr><td><strong>TU Braunschweig</strong></td><td>M.Sc. Electrical Engineering</td><td>차량 전자/통신, ADAS</td><td>자동차 산업 근접</td></tr>
+  <tr><td><strong>RWTH Aachen</strong></td><td>M.Sc. Electrical Engineering</td><td>임베디드, 자동차, ICT</td><td>연구 중심, PhD 연계</td></tr>
+  <tr><td><strong>TU Dresden</strong></td><td>M.Sc. Electrical Engineering</td><td>임베디드, IoT, 자동차</td><td>비용 낮음</td></tr>
+  <tr><td><strong>Universität Stuttgart</strong></td><td>M.Sc. Electrical Engineering</td><td>자동차, 임베디드, ADAS</td><td>산업 연계</td></tr>
+  <tr><td><strong>Hochschule (FH)</strong></td><td>M.Eng. Automotive Engineering</td><td>실무 중심</td><td>PhD 진입은 대학(Uni) 선호</td></tr>
+</table>
+<h3>2.2 필수 과목</h3>
+<ul>
+  <li><strong>Embedded Systems / Real-Time Systems</strong> (RTOS, WCET, scheduling)</li>
+  <li><strong>Automotive Software Engineering</strong> (AUTOSAR, RTE, SWC)</li>
+  <li><strong>Machine Learning on Edge Devices</strong> (TinyML, quantization, pruning)</li>
+  <li><strong>Formal Methods / Verification</strong> (model checking, SMT, IBP)</li>
+  <li><strong>Functional Safety</strong> (ISO 26262, FMEA, FTA)</li>
+  <li><strong>Hardware/Software Co-Design</strong> (MPU, TrustZone, DMA)</li>
+  <li><strong>German language</strong> (B1–B2 이상 권장, PhD 지원 시 유리)</li>
+</ul>
+<h3>2.3 HiWi / Werkstudent (병행 필수)</h3>
+<ul>
+  <li><strong>HiWi (Hilfswissenschaftler)</strong>: Lehrstuhl에서 연구 보조, 월 400–600 €, 연구 네트워크 진입</li>
+  <li><strong>Werkstudent</strong>: 자동차 OEM/공급사 (Bosch, Continental, ZF, Infineon, Vector, Elektrobit 등)에서 실무, 월 1,200–2,000 €</li>
+  <li><strong>목표</strong>: Master 1학년부터 HiWi, 2학년부터 Werkstudent 또는 둘 병행</li>
+</ul>
+</section>
+
+<section id="stage3">
+<h2>Stage 3 — Masterarbeit (2029, 4–6개월)</h2>
+<p><strong>목표:</strong> 현재 PoC를 <strong>측정 가능한 연구 질문</strong>으로 확장하여 1.0 (sehr gut) 달성 + Promotion 진입.</p>
+<h3>3.1 추천 Masterarbeit 주제 (현재 프로젝트 확장)</h3>
+<table>
+  <tr><th>#</th><th>주제</th><th>연구 질문</th><th>확장 방향</th></tr>
+  <tr><td>MA-1</td><td><strong>WCET-Guaranteed TinyML on Cortex-M33</strong></td><td>Q2.13 FNN의 worst-case execution time을 형식적으로 보장할 수 있는가?</td><td>WCET 분석 도구 (aiT, SWEET) 적용, cycle-accurate 측정</td></tr>
+  <tr><td>MA-2</td><td><strong>Physical Adversarial Robustness of Dual-Hall Gradiometer</strong></td><td>실제 자기 스푸핑 공격에 대한 false-positive/negative rate?</td><td>FEM 시뮬레이션 + 실제 Hall sensor 실험</td></tr>
+  <tr><td>MA-3</td><td><strong>Formal Verification of C/Rust ECU Partition</strong></td><td>MPU + Rust 타입 시스템으로 Freedom from Interference를 증명할 수 있는가?</td><td>CBMC/KLEE 또는 RustBelt 기반 검증</td></tr>
+  <tr><td>MA-4</td><td><strong>HIL Fidelity Analysis</strong></td><td>host 에뮬레이션이 실제 target 동작을 얼마나 정확히 예측하는가?</td><td>Cortex-M33 개발 보드에서 동일 시나리오 실행 + 비교</td></tr>
+  <tr><td>MA-5</td><td><strong>Synthetic-to-Real Generalization of Magnetic Compensation</strong></td><td>합성 데이터 모델이 실제 센서에서 얼마나 일반화되는가?</td><td>실측 데이터 수집 + domain adaptation</td></tr>
+</table>
+<h3>3.2 Masterarbeit 실행 계획 (6개월)</h3>
+<pre><code>Month 1: 문헌 조사 + 연구 질문 정교화 + 실험 환경 구축
+Month 2: 실험 설계 + 데이터 수집 (실측 또는 FEM)
+Month 3: 구현/측정 + 중간 결과
+Month 4: 분석 + 통계 검증
+Month 5: 논문 작성 (영문/독일어, 40-60 페이지)
+Month 6: 리뷰/수정 + 발표 (Kolloquium)</code></pre>
+<h3>3.3 핵심 산출물</h3>
+<ul>
+  <li><strong>Masterarbeit (thesis)</strong>: 1.0 목표</li>
+  <li><strong>재현 가능한 실험 코드</strong>: GitHub 공개 (DOI via Zenodo)</li>
+  <li><strong>선택적</strong>: 짧은 workshop paper (DATE/ESWEEK student track)</li>
+</ul>
+</section>
+
+<section id="stage4">
+<h2>Stage 4 — Promotion (Dr.-Ing.) (2030–2034)</h2>
+<p><strong>목표:</strong> 박사과정 진입 → Three-Pillar 연구 → Dr.-Ing. 취득 → TV-L E13 100% 연구직.</p>
+<h3>4.1 Three-Pillar 연구 구조 (박사 주제)</h3>
+<table>
+  <tr><th>Pillar</th><th>주제</th><th>핵심 기여</th><th>출판 타겟</th></tr>
+  <tr><td><strong>Pillar 1: TinyML Safety</strong></td><td>형식 검증 가능한 고정소수점 NN on MCU</td><td>IBP bounds + WCET + 정확도 트레이드오프</td><td>RTSS, EMSOFT, DATE</td></tr>
+  <tr><td><strong>Pillar 2: Physics-Informed AI Safety</strong></td><td>물리 모델 기반 AI 안전 모니터링</td><td>1oo2 plausibility + ISO/IEC 27090 대응</td><td>SAE, IEEE T-IV, IV</td></tr>
+  <tr><td><strong>Pillar 3: Systems Safety</strong></td><td>C/Rust 하이브리드 ECU의 Freedom from Interference</td><td>MPU + 타입 시스템 + 형식 검증</td><td>EMSOFT, RTAS, SAE</td></tr>
+</table>
+<h3>4.2 Promotion 진입 경로</h3>
+<table>
+  <tr><th>Option</th><th>설명</th><th>Vorteil</th><th>Nachteil</th></tr>
+  <tr><td><strong>A: Externe Promotion</strong></td><td>산업계 근무하며 외부 박사</td><td>수입 유지, 산업 데이터 접근</td><td>연구 시간 확보 어려움</td></tr>
+  <tr><td><strong>B: Interne Promotion</strong></td><td>Masterarbeit 우수 → Promotionsstelle (TV-L E13, 100%, 3.5-4.5년)</td><td>연구 집중, Betreuer 밀착</td><td>경쟁 높음, 1.0 필요</td></tr>
+  <tr><td><strong>C: Graduiertenkolleg</strong></td><td>DFG-funded RTG</td><td>구조화된 교육, 네트워크</td><td>지원 경쟁 매우 높음</td></tr>
+</table>
+<div class="note"><strong>권장:</strong> Option B (내부 Promotion) — Masterarbeit에서 Lehrstuhl과 관계 구축 후 Promotionsstelle 지원.</div>
+<h3>4.3 박사과정 타임라인</h3>
+<pre><code>Year 1 (Promotion): 문헌 조사 + 연구 질문 정교화 + 첫 번째 논문 (workshop)
+Year 2: Pillar 1 핵심 실험 + conference paper (DATE/ESWEEK)
+Year 3: Pillar 2/3 확장 + journal paper + 학회 발표
+Year 4: 논문 작성 (Dissertation, 150-250 페이지) + Disputation</code></pre>
+<h3>4.4 박사 학위 취득 후 진로</h3>
+<table>
+  <tr><th>경로</th><th>직책</th><th>연봉 (독일, 2026 기준)</th><th>비고</th></tr>
+  <tr><td>산업계 (OEM/공급사)</td><td>Senior Engineer / Lead</td><td>85,000–120,000 €</td><td>Bosch, Continental, ZF, Infineon</td></tr>
+  <tr><td>산업계 (Tier-2/스타트업)</td><td>Principal Engineer</td><td>90,000–130,000 €</td><td>Vector, Elektrobit, Apex.AI</td></tr>
+  <tr><td>학계</td><td>Junior Professor / Akademischer Rat</td><td>70,000–90,000 €</td><td>Habilitation 경로</td></tr>
+  <tr><td>연구소</td><td>Fraunhofer/DFKI 연구원</td><td>75,000–100,000 €</td><td>응용 연구</td></tr>
+</table>
+</section>
+
+<section id="stage5">
+<h2>Stage 5 — 자금/장학금 (병행)</h2>
+<table>
+  <tr><th>장학금/지원</th><th>대상</th><th>금액</th><th>비고</th></tr>
+  <tr><td><strong>DAAD</strong></td><td>외국인 학생/연구자</td><td>월 934 € (석사), 1,300 € (박사)</td><td>경쟁 높음, 학업 성적 중요</td></tr>
+  <tr><td><strong>Deutschlandstipendium</strong></td><td>우수 학생</td><td>월 300 €</td><td>학과 추천</td></tr>
+  <tr><td><strong>Promotionsstelle (TV-L E13)</strong></td><td>박사과정</td><td>월 ~4,800 € (brutto, 100%)</td><td>Lehrstuhl 내부 채용</td></tr>
+  <tr><td><strong>Bosch/Continental Stipendium</strong></td><td>특정 분야 학생</td><td>가변</td><td>산업 파트너십</td></tr>
+  <tr><td><strong>Förderverein</strong></td><td>학생</td><td>소액</td><td>네트워킹</td></tr>
+</table>
+</section>
+
+<section id="stage6">
+<h2>Stage 6 — 실행 체크리스트 (즉시 시작 가능)</h2>
+<h3>2026 Q4 (지금)</h3>
+<ul class="checklist">
+  <li>GitHub 레포 공개 + README 정리 + 데모 영상</li>
+  <li>기술 블로그 1편 (영문)</li>
+  <li>LinkedIn 정비</li>
+  <li>독일어 학습 시작 (Duolingo/Goethe, 목표 B1)</li>
+  <li>대학 3–5곳 리스트업 + 입학 요건 확인</li>
+</ul>
+<h3>2027 H1</h3>
+<ul class="checklist">
+  <li>Master 지원 (영어/독일어 프로그램)</li>
+  <li>HiWi/Werkstudent 지원 (Bosch, Continental, Vector, Infineon)</li>
+  <li>현재 프로젝트 v2: 실제 센서 데이터 수집 (STM32 + TLV493D)</li>
+  <li>논문 1편 (workshop track) 제출</li>
+</ul>
+<h3>2027 H2 – 2028</h3>
+<ul class="checklist">
+  <li>Master 1학년: 필수 과목 + HiWi</li>
+  <li>Master 2학년: Werkstudent + Masterarbeit 주제 확정</li>
+  <li>conference paper 1편 (DATE/ESWEEK student track)</li>
+</ul>
+<h3>2029</h3>
+<ul class="checklist">
+  <li>Masterarbeit 완료 (1.0 목표)</li>
+  <li>Promotionsstelle 지원 (Lehrstuhl)</li>
+  <li>Promotion 시작</li>
+</ul>
+<h3>2030–2034</h3>
+<ul class="checklist">
+  <li>Three-Pillar 연구 실행</li>
+  <li>conference paper 2–3편 + journal paper 1편</li>
+  <li>Dissertation + Disputation → Dr.-Ing.</li>
+</ul>
+</section>
+
+<section id="appA">
+<h2>부록 A — 독일 자동차 임베디드 Lehrstuhl 추천 (2026 기준)</h2>
+<table>
+  <tr><th>Lehrstuhl</th><th>대학</th><th>연구 분야</th><th>연락 방법</th></tr>
+  <tr><td>Lehrstuhl für Echtzeitsysteme</td><td>TUM</td><td>RTOS, WCET, embedded</td><td>웹사이트 → HiWi 공고</td></tr>
+  <tr><td>Institut für Technische Informatik</td><td>KIT</td><td>embedded, automotive</td><td>HiWi/Werkstudent 공고</td></tr>
+  <tr><td>Institut für Regelungstechnik</td><td>TU Braunschweig</td><td>ADAS, vehicle control</td><td>연구 그룹 연락</td></tr>
+  <tr><td>Chair of Embedded Software</td><td>RWTH Aachen</td><td>embedded, formal methods</td><td>HiWi 공고</td></tr>
+  <tr><td>Lehrstuhl für Rechnerarchitektur</td><td>TU Dresden</td><td>embedded, IoT</td><td>HiWi 공고</td></tr>
+</table>
+</section>
+
+<section id="appB">
+<h2>부록 B — 출판 타겟 (임베디드/자동차)</h2>
+<table>
+  <tr><th>학회/저널</th><th>분야</th><th>마감 (대략)</th><th>난이도</th></tr>
+  <tr><td>DATE</td><td>EDA, embedded, HW/SW</td><td>9월</td><td>중</td></tr>
+  <tr><td>ESWEEK</td><td>embedded, RTOS, IoT</td><td>4월</td><td>중-고</td></tr>
+  <tr><td>RTSS</td><td>real-time, scheduling</td><td>5월</td><td>고</td></tr>
+  <tr><td>EMSOFT</td><td>embedded software</td><td>4월</td><td>고</td></tr>
+  <tr><td>RTAS</td><td>RTOS, WCET</td><td>10월</td><td>중-고</td></tr>
+  <tr><td>SAE World Congress</td><td>automotive</td><td>8월</td><td>중</td></tr>
+  <tr><td>IEEE T-IV</td><td>자동차 AI</td><td>수시</td><td>중</td></tr>
+  <tr><td>IEEE Embedded Systems Letters</td><td>embedded</td><td>수시</td><td>중</td></tr>
+</table>
+</section>
+
+<section id="appC">
+<h2>부록 C — 현재 프로젝트 → 연구 질문 매핑</h2>
+<pre><code>safe-sensor-ecu (PoC)
+  ├── RQ1: WCET-guaranteed TinyML → MA-1, Pillar 1
+  ├── RQ2: Physics-informed AI safety → MA-2, Pillar 2
+  ├── RQ3: Formal verification of C/Rust partition → MA-3, Pillar 3
+  ├── RQ4: HIL fidelity → MA-4
+  └── RQ5: Synthetic-to-real generalization → MA-5</code></pre>
+</section>
+
+<footer>
+  safe-sensor-ecu — 독일 자동차 임베디드 연구 로드맵. 2026 기준 정보. 공식 출처(DAAD, DFG, 대학 웹사이트)를 반드시 확인하세요.
+</footer>
+</div>
+</body>
+</html>

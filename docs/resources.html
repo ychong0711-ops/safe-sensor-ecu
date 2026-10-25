@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>safe-sensor-ecu — 추천 강좌/자료</title>
+<style>
+  :root { --bg:#0f172a; --card:#1e293b; --fg:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --green:#34d399; --warn:#facc15; --red:#f87171; --border:#334155; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif; background:var(--bg); color:var(--fg); line-height:1.65; }
+  .container { max-width:1080px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+  header { border-bottom:1px solid var(--border); padding-bottom:1.5rem; margin-bottom:2rem; }
+  h1 { margin:0 0 .25rem; font-size:1.9rem; color:var(--accent); }
+  .subtitle { color:var(--muted); font-size:.95rem; }
+  nav.toc { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1rem 1.25rem; margin-bottom:2rem; }
+  nav.toc h2 { margin:0 0 .5rem; font-size:1.05rem; color:var(--accent); }
+  nav.toc ul { columns:2; padding-left:1.2rem; margin:0; }
+  nav.toc li { margin:.25rem 0; break-inside:avoid; }
+  nav.toc a { color:var(--fg); text-decoration:none; }
+  nav.toc a:hover { color:var(--accent); }
+  h2 { color:var(--accent); margin-top:2.5rem; border-bottom:1px solid var(--border); padding-bottom:.4rem; }
+  h3 { color:var(--green); margin-top:1.5rem; }
+  p, li { color:var(--fg); }
+  a { color:var(--accent); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  code { font-family:"Cascadia Code","Fira Code",Consolas,monospace; background:#0b1220; padding:.15rem .4rem; border-radius:4px; font-size:.9em; color:var(--warn); }
+  table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:.88rem; }
+  th, td { border:1px solid var(--border); padding:.45rem .65rem; text-align:left; vertical-align:top; }
+  th { background:var(--card); color:var(--accent); }
+  tr:nth-child(even) td { background:#151e33; }
+  .tag { display:inline-block; padding:.1rem .5rem; border-radius:4px; font-size:.75rem; font-weight:600; margin-right:.3rem; }
+  .tag.yt { background:#450a0a; color:#f87171; }
+  .tag.course { background:#1e3a5f; color:var(--accent); }
+  .tag.book { background:#064e3b; color:var(--green); }
+  .tag.tool { background:#422006; color:var(--warn); }
+  .note { background:#1e293b; border-left:3px solid var(--warn); padding:.7rem 1rem; margin:1rem 0; border-radius:4px; font-size:.9rem; }
+  footer { border-top:1px solid var(--border); margin-top:3rem; padding-top:1rem; color:var(--muted); font-size:.85rem; text-align:center; }
+  .level { color:var(--muted); font-size:.8rem; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>추천 강좌 / 자료</h1>
+  <div class="subtitle">safe-sensor-ecu 프로젝트 완성을 위한 YouTube 강좌, 강의, 책, 도구 모음</div>
+</header>
+
+<nav class="toc">
+  <h2>목차</h2>
+  <ul>
+    <li><a href="#rust">1. 임베디드 Rust</a></li>
+    <li><a href="#arm">2. ARM Cortex-M / MPU</a></li>
+    <li><a href="#tinyml">3. TinyML / 고정소수점 NN</a></li>
+    <li><a href="#formal">4. 형식 검증 / 안전</a></li>
+    <li><a href="#auto">5. 자동차 소프트웨어 (AUTOSAR/ISO)</a></li>
+    <li><a href="#hil">6. HIL / 테스트</a></li>
+    <li><a href="#german">7. 독일 대학원/연구</a></li>
+    <li><a href="#tools">8. 도구/레퍼런스</a></li>
+  </ul>
+</nav>
+
+<section id="rust">
+<h2>1. 임베디드 Rust</h2>
+<table>
+  <tr><th>자료</th><th>유형</th><th>설명</th></tr>
+  <tr><td><a href="https://www.youtube.com/@rustembedded">Rust Embedded Working Group (YouTube)</a></td><td><span class="tag yt">YouTube</span></td><td>임베디드 Rust 공식 채널, no_std, HAL, embassy 등</td></tr>
+  <tr><td><a href="https://docs.rust-embedded.org/book/">The Embedded Rust Book</a></td><td><span class="tag book">Book</span></td><td>no_std, unsafe, FFI, MPU 기초 — 필독</td></tr>
+  <tr><td><a href="https://www.youtube.com/watch?v=7Ki9gKqJqF4">Rust for Embedded (James Munns) — RustConf talks</a></td><td><span class="tag yt">YouTube</span></td><td>임베디드 Rust 철학, no_std 패턴</td></tr>
+  <tr><td><a href="https://www.youtube.com/@TheUrbanPenguin">The Urban Penguin — Rust</a></td><td><span class="tag yt">YouTube</span></td><td>Rust 기초/고급 (영어)</td></tr>
+  <tr><td><a href="https://github.com/rust-embedded/awesome-embedded-rust">Awesome Embedded Rust</a></td><td><span class="tag tool">Repo</span></td><td>HAL, RTOS, 드라이버 큐레이션</td></tr>
+  <tr><td><a href="https://ferrous-systems.com/blog/">Ferrous Systems Blog</a></td><td><span class="tag course">Blog</span></td><td>산업용 Rust, safety-critical Rust (Ferrocene)</td></tr>
+</table>
+<div class="note"><strong>우선순위:</strong> Embedded Rust Book → Rust Embedded WG 영상 → Ferrous Systems 블로그 (safety-critical Rust).</div>
+</section>
+
+<section id="arm">
+<h2>2. ARM Cortex-M / MPU / 메모리 보호</h2>
+<table>
+  <tr><th>자료</th><th>유형</th><th>설명</th></tr>
+  <tr><td><a href="https://www.youtube.com/@PhilRobotics">Phil's Lab (YouTube)</a></td><td><span class="tag yt">YouTube</span></td><td>STM32 HAL, 인터럽트, DMA, MPU 실습</td></tr>
+  <tr><td><a href="https://www.youtube.com/@ShawnHymers">Shawn Hymers (YouTube)</a></td><td><span class="tag yt">YouTube</span></td><td>ARM Cortex-M, RTOS, bare-metal</td></tr>
+  <tr><td><a href="https://developer.arm.com/documentation/dui0553/latest/">ARMv7-M / ARMv8-M Architecture Reference Manual</a></td><td><span class="tag book">Manual</span></td><td>MPU, PRIMASK, exception model 공식 문서</td></tr>
+  <tr><td><a href="https://www.st.com/resource/en/application_note/an4838.pdf">ST AN4838 — Managing Memory Protection Unit (MPU) in STM32</a></td><td><span class="tag book">App Note</span></td><td>STM32 MPU 실전 가이드</td></tr>
+  <tr><td><a href="https://www.youtube.com/watch?v=Z6L2yXq1XqM">"Memory Protection Unit (MPU) in ARM Cortex-M" (various)</a></td><td><span class="tag yt">YouTube</span></td><td>MPU region 설정, AP bits, XN</td></tr>
+  <tr><td><a href="https://infineon.com">Infineon AURIX TC3xx User Manual (TriCore)</a></td><td><span class="tag book">Manual</span></td><td>DPRx/CPRx/PSW.PRS — 헤더만 있는 부분 보완</td></tr>
+</table>
+</section>
+
+<section id="tinyml">
+<h2>3. TinyML / 고정소수점 NN</h2>
+<table>
+  <tr><th>자료</th><th>유형</th><th>설명</th></tr>
+  <tr><td><a href="https://www.youtube.com/@tinyml">TinyML (YouTube, Harvard/Google)</a></td><td><span class="tag yt">YouTube</span></td><td>TinyML 기초, MCU에서 ML 실행</td></tr>
+  <tr><td><a href="https://www.coursera.org/learn/introduction-to-tensorflow-lite-microcontrollers">Introduction to TensorFlow Lite for Microcontrollers (Coursera)</a></td><td><span class="tag course">Course</span></td><td>TFLite Micro, quantization, deployment</td></tr>
+  <tr><td><a href="https://www.youtube.com/watch?v=8CK5p5k5z0o">Quantization (INT8) explained</a></td><td><span class="tag yt">YouTube</span></td><td>양자화 원리, Q-format</td></tr>
+  <tr><td><a href="https://arxiv.org/abs/2004.06663">"Fixed-Point Neural Networks" papers (arXiv)</a></td><td><span class="tag book">Paper</span></td><td>Q-format NN, IBP bounds</td></tr>
+  <tr><td><a href="https://github.com/tinyml-book">TinyML Book (Pete Warden)</a></td><td><span class="tag book">Book</span></td><td>TinyML end-to-end 가이드</td></tr>
+  <tr><td><a href="https://www.youtube.com/@3blue1brown">3Blue1Brown — Neural Networks</a></td><td><span class="tag yt">YouTube</span></td><td>NN 직관 (수학 기반)</td></tr>
+</table>
+</section>
+
+<section id="formal">
+<h2>4. 형식 검증 / 안전 (Formal Verification &amp; Safety)</h2>
+<table>
+  <tr><th>자료</th><th>유형</th><th>설명</th></tr>
+  <tr><td><a href="https://www.youtube.com/@FormalMethods">Formal Methods (YouTube)</a></td><td><span class="tag yt">YouTube</span></td><td>Model checking, SMT, IBP 기초</td></tr>
+  <tr><td><a href="https://www.coursera.org/learn/software-security">Software Security (Coursera, UMD)</a></td><td><span class="tag course">Course</span></td><td>버퍼 오버플로, 형식 검증 입문</td></tr>
+  <tr><td><a href="https://cbmc.org/">CBMC (C Bounded Model Checker)</a></td><td><span class="tag tool">Tool</span></td><td>C 코드 형식 검증</td></tr>
+  <tr><td><a href="https://rust-analyzer.github.io/book/">RustBelt / Rust 형식 검증</a></td><td><span class="tag book">Paper</span></td><td>Rust 타입 시스템 soundness</td></tr>
+  <tr><td><a href="https://www.iso.org/standard/43464.html">ISO 26262 (Part 6)</a></td><td><span class="tag book">Standard</span></td><td>Software-level product development</td></tr>
+  <tr><td><a href="https://www.iso.org/standard/73827.html">ISO/IEC 27090 (AI security)</a></td><td><span class="tag book">Standard</span></td><td>Embedded AI evasion defense</td></tr>
+</table>
+</section>
+
+<section id="auto">
+<h2>5. 자동차 소프트웨어 (AUTOSAR / ISO 26262)</h2>
+<table>
+  <tr><th>자료</th><th>유형</th><th>설명</th></tr>
+  <tr><td><a href="https://www.youtube.com/@VectorGroup">Vector Group (YouTube)</a></td><td><span class="tag yt">YouTube</span></td><td>AUTOSAR, CAN, ECU 개발 실무</td></tr>
+  <tr><td><a href="https://www.youtube.com/@automotive-software">Automotive Software (various)</a></td><td><span class="tag yt">YouTube</span></td><td>AUTOSAR Classic/Adaptive 입문</td></tr>
+  <tr><td><a href="https://www.autosar.org/">AUTOSAR 공식 문서</a></td><td><span class="tag book">Spec</span></td><td>RTE, SWC, ARXML 사양</td></tr>
+  <tr><td><a href="https://www.youtube.com/watch?v=5qap5aO4i9A">"Introduction to AUTOSAR" (YouTube)</a></td><td><span class="tag yt">YouTube</span></td><td>RTE, SWC, exclusive area 개념</td></tr>
+  <tr><td><a href="https://www.sae.org/">SAE International</a></td><td><span class="tag book">Standard</span></td><td>자동차 표준, J3061 (cybersecurity)</td></tr>
+</table>
+</section>
+
+<section id="hil">
+<h2>6. HIL / 테스트</h2>
+<table>
+  <tr><th>자료</th><th>유형</th><th>설명</th></tr>
+  <tr><td><a href="https://www.youtube.com/@PhilRobotics">Phil's Lab (YouTube)</a></td><td><span class="tag yt">YouTube</span></td><td>STM32 디버깅, 테스트</td></tr>
+  <tr><td><a href="https://www.youtube.com/watch?v=0HD4xkGq4K0">"Hardware-in-the-Loop Testing" (YouTube)</a></td><td><span class="tag yt">YouTube</span></td><td>HIL 개념, fault injection</td></tr>
+  <tr><td><a href="https://www.youtube.com/watch?v=3wL_7o4L6gA">"Signal Handling in C (sigaction, siglongjmp)"</a></td><td><span class="tag yt">YouTube</span></td><td>POSIX signal handling</td></tr>
+  <tr><td><a href="https://man7.org/linux/man-pages/man2/mprotect.2.html">mprotect(2) man page</a></td><td><span class="tag book">Man page</span></td><td>메모리 보호 API</td></tr>
+</table>
+</section>
+
+<section id="german">
+<h2>7. 독일 대학원 / 연구</h2>
+<table>
+  <tr><th>자료</th><th>유형</th><th>설명</th></tr>
+  <tr><td><a href="https://www.youtube.com/@StudyinGermany">Study in Germany (YouTube)</a></td><td><span class="tag yt">YouTube</span></td><td>독일 유학, 입학, 비자</td></tr>
+  <tr><td><a href="https://www.daad.de/en/">DAAD (독일 학술 교류처)</a></td><td><span class="tag course">Org</span></td><td>장학금, 대학 검색, 입학 정보</td></tr>
+  <tr><td><a href="https://www.hrk.de/">HRK (독일 대학 총장 회의)</a></td><td><span class="tag course">Org</span></td><td>대학/프로그램 검색</td></tr>
+  <tr><td><a href="https://www.goethe.de/">Goethe-Institut</a></td><td><span class="tag course">Org</span></td><td>독일어 시험 (B1/B2/C1)</td></tr>
+  <tr><td><a href="https://www.youtube.com/@DeutschFuerEuch">Deutsch für Euch (YouTube)</a></td><td><span class="tag yt">YouTube</span></td><td>독일어 학습 (영어 설명)</td></tr>
+  <tr><td><a href="https://www.youtube.com/@EasyGerman">Easy German (YouTube)</a></td><td><span class="tag yt">YouTube</span></td><td>일상 독일어 (자막)</td></tr>
+</table>
+</section>
+
+<section id="tools">
+<h2>8. 도구 / 레퍼런스</h2>
+<table>
+  <tr><th>도구</th><th>용도</th><th>링크</th></tr>
+  <tr><td>Rust toolchain</td><td>Rust 빌드</td><td><a href="https://rustup.rs/">rustup.rs</a></td></tr>
+  <tr><td>ARM GNU Toolchain</td><td>Bare-metal ARM 컴파일</td><td><a href="https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads">ARM Downloads</a></td></tr>
+  <tr><td>WSL2 (Ubuntu)</td><td>Windows에서 Linux 환경</td><td><a href="https://learn.microsoft.com/windows/wsl/install">MS Docs</a></td></tr>
+  <tr><td>STM32CubeIDE</td><td>STM32 개발/디버깅</td><td><a href="https://www.st.com/en/development-tools/stm32cubeide.html">ST</a></td></tr>
+  <tr><td>Infineon AURIX Development Studio</td><td>AURIX 개발</td><td><a href="https://www.infineon.com/cms/en/tools/aurix-development-studio/">Infineon</a></td></tr>
+  <tr><td>Zenodo</td><td>연구 데이터 DOI</td><td><a href="https://zenodo.org/">zenodo.org</a></td></tr>
+</table>
+<div class="note">
+<strong>학습 순서 권장:</strong> Rust Embedded Book → ARM MPU (Phil's Lab) → TinyML (Coursera) →
+AUTOSAR (Vector) → Formal Methods → 독일어 (병행).<br>
+매일 1–2시간, 6개월이면 핵심 기초를 쌓을 수 있습니다.
+</div>
+</section>
+
+<footer>
+  safe-sensor-ecu — 추천 자료 목록. 링크는 2026년 기준이며 변경될 수 있습니다.
+</footer>
+</div>
+</body>
+</html>

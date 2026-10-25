@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>safe-sensor-ecu — 사용자 설명서</title>
+<style>
+  :root { --bg:#0f172a; --card:#1e293b; --fg:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --green:#34d399; --warn:#facc15; --red:#f87171; --border:#334155; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif; background:var(--bg); color:var(--fg); line-height:1.65; }
+  .container { max-width:980px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+  header { border-bottom:1px solid var(--border); padding-bottom:1.5rem; margin-bottom:2rem; }
+  h1 { margin:0 0 .25rem; font-size:2rem; color:var(--accent); }
+  .subtitle { color:var(--muted); font-size:.95rem; }
+  .banner { background:#3b0764; border:1px solid #c084fc; border-radius:8px; padding:.9rem 1.1rem; margin:1.2rem 0; color:#e9d5ff; font-size:.95rem; }
+  .banner strong { color:#fde047; }
+  nav.toc { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1rem 1.25rem; margin-bottom:2rem; }
+  nav.toc h2 { margin:0 0 .5rem; font-size:1.05rem; color:var(--accent); }
+  nav.toc ul { columns:2; padding-left:1.2rem; margin:0; }
+  nav.toc li { margin:.25rem 0; break-inside:avoid; }
+  nav.toc a { color:var(--fg); text-decoration:none; }
+  nav.toc a:hover { color:var(--accent); }
+  h2 { color:var(--accent); margin-top:2.5rem; border-bottom:1px solid var(--border); padding-bottom:.4rem; }
+  h3 { color:var(--green); margin-top:1.5rem; }
+  p, li { color:var(--fg); }
+  code, pre { font-family:"Cascadia Code","Fira Code",Consolas,monospace; }
+  code { background:#0b1220; padding:.15rem .4rem; border-radius:4px; font-size:.9em; color:var(--warn); }
+  pre { background:#0b1220; border:1px solid var(--border); border-radius:8px; padding:1rem; overflow-x:auto; font-size:.85rem; line-height:1.5; }
+  table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:.9rem; }
+  th, td { border:1px solid var(--border); padding:.5rem .7rem; text-align:left; vertical-align:top; }
+  th { background:var(--card); color:var(--accent); }
+  tr:nth-child(even) td { background:#151e33; }
+  .tag { display:inline-block; padding:.1rem .5rem; border-radius:4px; font-size:.75rem; font-weight:600; }
+  .tag.ok { background:#064e3b; color:var(--green); }
+  .tag.warn { background:#422006; color:var(--warn); }
+  .tag.no { background:#450a0a; color:var(--red); }
+  .note { background:#1e293b; border-left:3px solid var(--warn); padding:.7rem 1rem; margin:1rem 0; border-radius:4px; font-size:.9rem; }
+  footer { border-top:1px solid var(--border); margin-top:3rem; padding-top:1rem; color:var(--muted); font-size:.85rem; text-align:center; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>safe-sensor-ecu</h1>
+  <div class="subtitle">Hardware-Enforced C/Rust Hybrid Automotive Sensor &amp; Control Unit — 사용자 설명서</div>
+  <div class="banner">
+    <strong>⚠ 상태:</strong> 본 프로젝트는 <strong>개념 데모(concept demonstrator) / 연구 프로토타입</strong>입니다.
+    ISO 26262 또는 ISO/IEC 27090 인증을 받지 않았으며, 실제 target 실리콘에서 검증되지 않았습니다.
+    자세한 범위와 한계는 <a href="#limitations">§ 4. Scope &amp; Limitations</a>을 참고하세요.
+  </div>
+</header>
+
+<nav class="toc">
+  <h2>목차</h2>
+  <ul>
+    <li><a href="#overview">1. 개요</a></li>
+    <li><a href="#prereq">2. 사전 요구사항</a></li>
+    <li><a href="#quickstart">3. 빠른 시작 (Quick Start)</a></li>
+    <li><a href="#targets">4. 빌드 타겟</a></li>
+    <li><a href="#codegen">5. 코드 생성 (Codegen)</a></li>
+    <li><a href="#layout">6. 저장소 구조</a></li>
+    <li><a href="#hil">7. HIL 검증</a></li>
+    <li><a href="#limitations">8. 범위와 한계</a></li>
+    <li><a href="#troubleshoot">9. 문제 해결 (FAQ)</a></li>
+  </ul>
+</nav>
+
+<section id="overview">
+<h2>1. 개요</h2>
+<p>
+<code>safe-sensor-ecu</code>는 레거시 C Basic Software(CAN FD/CAN XL, DMA, OS ISR)와 안전 핵심 신호 처리를
+<strong>하드웨어 강제 파티션(C BSW 도메인 ↔ Unprivileged Safe-Rust SWC 도메인)</strong>으로 분리하는
+개념을 실행 가능한 빌드(<code>make all</code>)로 보여주는 프로젝트입니다.
+</p>
+<p>네 가지 기여를 하나의 빌드에서 시연합니다:</p>
+<ol>
+  <li><strong>Co-optimized Dual-Hall Gradiometer + Q2.13 TinyML 필터</strong> — 3D Biot–Savart 시뮬레이터 위에서 6→32(ReLU)→3 FNN(288 MAC, 716 B ROM)을 학습/양자화하고 Formal IBP bounds를 계산합니다.</li>
+  <li><strong>컴파일러 강제 Zero-<code>unsafe</code> Application SWC</strong> — ARXML-Lite 계약에서 <code>#[repr(C)]</code> ABI, C RTE 훅, RAII <code>PimGuard</code> 토큰, C-ABI shim을 자동 생성하여 <code>swc_rust_app</code>이 <code>#![no_std] + #![forbid(unsafe_code)]</code>로 빌드됩니다.</li>
+  <li><strong>하드웨어 메모리 보호 스케치</strong> — ARMv8-M PMSAv8 (STM32H563) 32-byte region + Infineon AURIX TC375 레지스터 매핑(헤더만)으로 파티션을 정의합니다.</li>
+  <li><strong>1oo2 물리 플라우저빌리티 모니터</strong> — dual-Hall 공간 그래디언트 bounds로 near-field 자기 스푸핑을 감지하여 Safe Neutral로 전이합니다.</li>
+</ol>
+<div class="note">
+<strong>중요:</strong> 본 프로젝트는 <strong>개념 데모</strong>입니다. 인증된 안전 ECU가 아니며, 실제 target 실리콘에서
+검증되지 않았습니다. HIL은 host(Linux) 에뮬레이션이며, ML 메트릭은 합성 데이터 기반입니다.
+</div>
+</section>
+
+<section id="prereq">
+<h2>2. 사전 요구사항</h2>
+<table>
+  <tr><th>도구</th><th>용도</th><th>비고</th></tr>
+  <tr><td><code>python3</code> + <code>numpy</code></td><td>시뮬레이션/학습/코드 생성</td><td>Windows: WSL Ubuntu 권장</td></tr>
+  <tr><td><code>cargo</code> / <code>rustc</code> (≥ 1.85)</td><td>Rust 빌드</td><td>edition 2021, profile.release (LTO, opt-level 3)</td></tr>
+  <tr><td><code>gcc</code></td><td>HIL 호스트 빌드</td><td>POSIX (Linux/macOS/WSL)</td></tr>
+  <tr><td><code>arm-none-eabi-gcc</code></td><td>Bare-metal ARM 컴파일 체크</td><td>링크는 수행되지 않음</td></tr>
+  <tr><td><code>make</code></td><td>빌드 자동화</td><td>POSIX make</td></tr>
+</table>
+<div class="note">
+Windows 네이티브 환경에서는 <code>python3</code>, <code>gcc</code>, POSIX <code>rm</code>/<code>./build/hil_runner</code>가 없으므로
+<strong>WSL2 (Ubuntu)</strong> 사용을 권장합니다.
+</div>
+</section>
+
+<section id="quickstart">
+<h2>3. 빠른 시작 (Quick Start)</h2>
+<pre><code>git clone &lt;repo&gt;
+cd safe-sensor-ecu
+make all</code></pre>
+<p><code>make all</code>은 다음을 순서대로 실행합니다:</p>
+<ol>
+  <li><code>codegen</code> — <code>rte_gen/generate_rte.py</code> + <code>sim/train_and_quantize.py</code></li>
+  <li><code>rust-host</code> — <code>cargo build --release</code></li>
+  <li><code>arm-check</code> — <code>arm-none-eabi-gcc</code>로 <code>mpu_stm32h5_pmsav8.c</code> 컴파일</li>
+  <li><code>hil-test</code> — HIL 빌드 + 11,500 사이클 실행</li>
+</ol>
+<p>성공 시 <code>build/hil_results.json</code>에 <code>"status": "PASS_ALL_11500_CYCLES"</code>가 출력됩니다.</p>
+</section>
+
+<section id="targets">
+<h2>4. 빌드 타겟</h2>
+<table>
+  <tr><th>타겟</th><th>설명</th></tr>
+  <tr><td><code>make all</code></td><td>End-to-end: 코드 생성 → Rust 빌드 → ARM 컴파일 체크 → HIL 실행</td></tr>
+  <tr><td><code>make codegen</code></td><td>C/Rust RTE FFI 생성 + Q2.13 FNN 학습/양자화 + IBP bounds</td></tr>
+  <tr><td><code>make rust-host</code></td><td><code>#![no_std] + #![forbid(unsafe_code)]</code> Rust staticlib 빌드</td></tr>
+  <tr><td><code>make arm-check</code></td><td>Cortex-M33 PMSAv8 파티션 매니저 컴파일 + footprint 출력 (562 B .o)</td></tr>
+  <tr><td><code>make hil-test</code></td><td>11,500 사이클 HIL + 스푸핑 + fault-injection 실행</td></tr>
+  <tr><td><code>make clean</code></td><td><code>build/</code>, <code>target/</code> 삭제</td></tr>
+</table>
+<div class="note">
+<code>make all</code>은 <strong>flashable image를 생성하지 않습니다</strong>. 베어메탈 이미지는 링크되지 않으며,
+Rust는 host target으로만 빌드됩니다 (see § 8).
+</div>
+</section>
+
+<section id="codegen">
+<h2>5. 코드 생성 (Codegen)</h2>
+<h3>5.1 RTE 계약 생성 (<code>rte_gen/generate_rte.py</code>)</h3>
+<p><code>swc_contract.json</code>(ARXML-Lite)에서 다음을 자동 생성합니다:</p>
+<ul>
+  <li><code>bsw_c/include/rte_generated.h</code> — C RTE struct + <code>_Static_assert</code> (32 B PIM)</li>
+  <li><code>swc_rust_ffi/src/lib.rs</code> — <code>#[repr(C)]</code> struct + <code>PimGuard</code> RAII 토큰 + FFI extern block</li>
+  <li><code>swc_rust_rte_entry/src/lib.rs</code> — <code>#[no_mangle]</code> C-ABI shim</li>
+</ul>
+<h3>5.2 ML 학습/양자화 (<code>sim/train_and_quantize.py</code>)</h3>
+<p>3D Biot–Savart 시뮬레이터(24,000 샘플 학습 + 5,000 테스트)에서 6→32(ReLU)→3 FNN을 학습하고
+Q2.13 고정소수점 가중치를 <code>swc_rust_app/src/weights_generated.rs</code>로 내보냅니다.</p>
+<table>
+  <tr><th>메트릭</th><th>Raw Sensor A</th><th>Classic Differential</th><th>Q2.13 Safe-Rust ECU</th></tr>
+  <tr><td>Signal Reconstruction R²</td><td>0.5870</td><td>0.7449</td><td><strong>0.9340</strong></td></tr>
+  <tr><td>Bz MAE (%FS)</td><td>8.83 %</td><td>7.54 %</td><td><strong>3.22 %</strong></td></tr>
+  <tr><td>False Switch Rate</td><td>9.42 %</td><td>7.74 %</td><td><strong>3.66 %</strong></td></tr>
+  <tr><td>Near-Field Spoofing Blocked</td><td>0 / 500</td><td>0 / 500</td><td><strong>500 / 500</strong></td></tr>
+  <tr><td>Flash Footprint</td><td>—</td><td>—</td><td>716 B (weights) + 562 B (.o)</td></tr>
+</table>
+<div class="note">
+모든 메트릭은 <strong>합성 데이터</strong> 기반입니다. 실제 센서/공격자 데이터로 검증되지 않았습니다.
+</div>
+</section>
+
+<section id="layout">
+<h2>6. 저장소 구조</h2>
+<pre><code>safe-sensor-ecu/
+├── Makefile
+├── rte_gen/
+│   ├── swc_contract.json          # ARXML-Lite 계약 (32 B PIM, EA, safety bounds)
+│   └── generate_rte.py            # C/Rust RTE + PimGuard + C-ABI shim 생성
+├── sim/
+│   ├── train_and_quantize.py      # 3D Biot–Savart 시뮬레이터 + Q2.13 학습 + IBP
+│   └── training_metrics.json      # 자동 출력 메트릭
+├── swc_rust_ffi/                  # Hand-audited 최소 unsafe crate (PimGuard, panic hook)
+├── swc_rust_app/                  # #![no_std] + #![forbid(unsafe_code)] SWC (host build only)
+│   └── src/
+│       ├── lib.rs                 # Q2.13 FNN + 1oo2 plausibility + RAII PIM update
+│       └── weights_generated.rs   # 자동 생성 716 B 고정소수점 가중치
+├── swc_rust_rte_entry/            # #[no_mangle] C-ABI shim
+├── bsw_c/
+│   ├── include/                   # stm32h5_mpu_regs.h, aurix_tc375_mpu_regs.h (header only), rte_generated.h
+│   ├── linker/                    # stm32h563_partitioned.ld (not exercised by CI)
+│   └── src/mpu_stm32h5_pmsav8.c  # Cortex-M33 MPU init + MemManage handler (not linked)
+├── hil_sim/
+│   └── hil_runner.c               # POSIX mprotect + SIGSEGV fault-injection harness (host)
+└── docs/
+    └── user-manual.html           # 본 문서
+</code></pre>
+</section>
+
+<section id="hil">
+<h2>7. HIL 검증</h2>
+<p>HIL harness(<code>hil_sim/hil_runner.c</code>)는 host에서 다음을 검증합니다:</p>
+<ul>
+  <li><strong>Suite 1</strong>: 10,000 Q2.13 FNN + PimGuard 사이클 (latency &amp; determinism)</li>
+  <li><strong>Suite 2</strong>: 500 near-field magnetic spoofing 공격 (ISO/IEC 27090-style)</li>
+  <li><strong>Suite 3</strong>: 500 Rust <code>panic!()</code> fault injection (zero-reset partition recovery)</li>
+  <li><strong>Suite 4</strong>: 500 hardware MPU illegal write injection</li>
+</ul>
+<p>총 11,500 사이클, <code>"status": "PASS_ALL_11500_CYCLES"</code>가 출력되면 성공입니다.</p>
+<div class="note">
+HIL은 <strong>host 에뮬레이션</strong>입니다 (Linux <code>mmap</code>/<code>mprotect</code> + <code>SIGSEGV</code> + <code>siglongjmp</code>).
+ARMv8-M cycle-accurate 모델이 아니며, 일부 판정(예: missed deadline 카운터)은 tautological합니다.
+자세한 한계는 § 8을 참고하세요.
+</div>
+</section>
+
+<section id="limitations">
+<h2>8. 범위와 한계 (Honest Positioning)</h2>
+<h3>이 저장소가 <span class="tag ok">IS</span> 하는 것</h3>
+<ul>
+  <li>합성 데이터 기반 Q2.13 FNN + 코드 생성 파이프라인</li>
+  <li>RAII PimGuard (nesting-safe, atomic re-entrancy guard 포함) 스케치</li>
+  <li>MPU 파티션 매니저 스케치 (host 컴파일만)</li>
+  <li>Host HIL fault-injection harness</li>
+</ul>
+<h3>이 저장소가 <span class="tag no">IS NOT</span> 하는 것</h3>
+<ul>
+  <li>어떤 표준(ISO 26262, ISO/IEC 27090)에도 인증되지 않음</li>
+  <li>target 실리콘에서 검증되지 않음 (Rust는 host target 빌드, 베어메탈 이미지 미링크)</li>
+  <li>HIL은 cycle-accurate ARM 모델이 아님</li>
+  <li>AURIX TC375 매핑은 헤더만 존재 (코드/테스트 없음)</li>
+  <li>ML 메트릭은 합성 데이터 기반 (독립 테스트 세트 없음)</li>
+</ul>
+<h3>알려진 한계</h3>
+<ul>
+  <li>Rust/C 권한 경계는 스케치 수준 (unprivileged Rust → privileged C 호출은 실제 target에서 HardFault)</li>
+  <li>HIL의 일부 판정은 tautological (EA nesting은 본 리비전에서 수정됨)</li>
+  <li>IBP 도메인(±130 mT)이 센서 선형 범위(±20–25 mT)를 초과</li>
+  <li>가중치 클리핑은 경고 없이 수행됨</li>
+</ul>
+</section>
+
+<section id="troubleshoot">
+<h2>9. 문제 해결 (FAQ)</h2>
+<dl>
+  <dt><code>make all</code>이 <code>python3: command not found</code>로 실패합니다.</dt>
+  <dd>Windows에서는 WSL2(Ubuntu)를 사용하세요. <code>sudo apt-get install python3 python3-numpy gcc-arm-none-eabi</code>.</dd>
+  <dt><code>arm-none-eabi-gcc</code>가 없습니다.</dt>
+  <dd>ARM GNU Toolchain을 설치하고 PATH에 추가하세요 (Windows: <code>C:\STM32_Tools\arm_toolchain\...\bin</code>).</dd>
+  <dt>HIL이 <code>SIGSEGV</code>로 죽습니다.</dt>
+  <dd>WSL/Linux에서 실행해야 합니다. Windows 네이티브에서는 <code>mmap</code>/<code>mprotect</code>/<code>sigaction</code>이 동작하지 않습니다.</dd>
+  <dt>재현성이 걱정됩니다.</dt>
+  <dd>시드가 고정(<code>RNG = np.random.default_rng(20261021)</code>)되어 있어 <code>train_and_quantize.py</code> 재실행 결과는 byte-identical입니다.</dd>
+  <dt>코드 생성물을 수동 편집해도 됩니까?</dt>
+  <dd><code>swc_rust_ffi/src/lib.rs</code>, <code>rte_generated.h</code>, <code>weights_generated.rs</code>는 자동 생성 파일입니다.
+  <code>make codegen</code> 실행 시 덮어쓰여집니다. 변경은 생성기(<code>generate_rte.py</code>, <code>train_and_quantize.py</code>)에서 하세요.</dd>
+</dl>
+</section>
+
+<footer>
+  safe-sensor-ecu — Concept demonstrator / research prototype. Not certified. &copy; 2026
+</footer>
+</div>
+</body>
+</html>

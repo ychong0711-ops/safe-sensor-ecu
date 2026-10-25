@@ -1,0 +1,14 @@
+{
+  "status": "PASS_ALL_11500_CYCLES",
+  "total_ecu_1ms_ticks": 11500,
+  "can_heartbeat_frames_sent": 11500,
+  "missed_deadlines": 0,
+  "protected_c_torque_intact_mNm": 1250,
+  "pimguard_ea_acquisitions": 10500,
+  "unbalanced_ea_locks_leaked": 0,
+  "avg_q13_fnn_runnable_latency_ns": 271.9,
+  "est_cortex_m33_250mhz_latency_us": 3.18,
+  "spoofing_attacks_blocked": "500 / 500 (100.0%)",
+  "rust_panics_isolated_zero_reset": "500 / 500 (avg 332.5 ns)",
+  "mpu_illegal_writes_blocked_zero_reset": "500 / 500 (avg 4289.8 ns)"
+}
